@@ -113,29 +113,36 @@ async function toggle() {
     isCheckedIn = true;
 
   } else {
-   // CHECK OUT
-let checkOutTime = new Date();
-let start = new Date(localStorage.getItem("checkIn"));
+    // CHECK OUT
+    let checkOutTime = new Date();
+    let start = new Date(localStorage.getItem("checkIn"));
 
-let diff = (checkOutTime - start) / (1000 * 60 * 60);
+    let diff = (checkOutTime - start) / (1000 * 60 * 60);
 
-let locationData = await getLocation().catch(() => null);
+    let locationData = await getLocation().catch(() => null);
 
-let record = {
-  date: start.toLocaleDateString(),
-  checkIn: start.toLocaleTimeString(),
-  checkOut: checkOutTime.toLocaleTimeString(),
-  hours: diff.toFixed(2),
-  location: locationData
-    ? `${locationData.lat}, ${locationData.lng}`
-    : "unknown"
-};
+    let record = {
+      date: start.toLocaleDateString(),
+      checkIn: start.toLocaleTimeString(),
+      checkOut: checkOutTime.toLocaleTimeString(),
+      hours: diff.toFixed(2),
+      location: locationData
+        ? `${locationData.lat}, ${locationData.lng}`
+        : "unknown"
+    };
 
-history.push(record);
-localStorage.setItem("history", JSON.stringify(history));
+    history.push(record);
+    localStorage.setItem("history", JSON.stringify(history));
 
-renderHistory();
-};
+    btn.innerText = "Check In";
+    btn.classList.remove("out");
+    btn.classList.add("in");
+
+    isCheckedIn = false;
+
+    renderHistory();
+  }
+}
 
     // 🟢 HISTORY-д хадгалах хэсэг
     let record = {
