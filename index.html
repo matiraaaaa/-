@@ -94,7 +94,7 @@ let checkInTime;
 // history хадгалах array
 let history = JSON.parse(localStorage.getItem("history")) || [];
 
-function toggle() {
+async function toggle() {
   let btn = document.getElementById("btn");
   let status = document.getElementById("status");
 
@@ -113,9 +113,15 @@ function toggle() {
     isCheckedIn = true;
 
   } else {
-    // CHECK OUT
-   let locationData = await getLocation().catch(() => null);
-    let record = {
+   // CHECK OUT
+let checkOutTime = new Date();
+let start = new Date(localStorage.getItem("checkIn"));
+
+let diff = (checkOutTime - start) / (1000 * 60 * 60);
+
+let locationData = await getLocation().catch(() => null);
+
+let record = {
   date: start.toLocaleDateString(),
   checkIn: start.toLocaleTimeString(),
   checkOut: checkOutTime.toLocaleTimeString(),
@@ -123,6 +129,12 @@ function toggle() {
   location: locationData
     ? `${locationData.lat}, ${locationData.lng}`
     : "unknown"
+};
+
+history.push(record);
+localStorage.setItem("history", JSON.stringify(history));
+
+renderHistory();
 };
 
     // 🟢 HISTORY-д хадгалах хэсэг
