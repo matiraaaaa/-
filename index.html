@@ -115,6 +115,15 @@ async function toggle() {
   } else {
     // CHECK OUT
    let locationData = await getLocation().catch(() => null);
+    let record = {
+  date: start.toLocaleDateString(),
+  checkIn: start.toLocaleTimeString(),
+  checkOut: checkOutTime.toLocaleTimeString(),
+  hours: diff.toFixed(2),
+  location: locationData
+    ? `${locationData.lat}, ${locationData.lng}`
+    : "unknown"
+};
 
     // 🟢 HISTORY-д хадгалах хэсэг
     let record = {
