@@ -94,7 +94,7 @@ let checkInTime;
 // history хадгалах array
 let history = JSON.parse(localStorage.getItem("history")) || [];
 
-function toggle() {
+async function toggle() {
   let btn = document.getElementById("btn");
   let status = document.getElementById("status");
 
