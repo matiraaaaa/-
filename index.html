@@ -1,33 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Time Tracker</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+    }
+
+    .circle-btn {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: none;
+      font-size: 22px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .in {
+      background: #22c55e;
+    }
+
+    .out {
+      background: #ef4444;
+    }
+
+    .circle-btn:active {
+      transform: scale(0.95);
+    }
+
+    #status {
+      margin-top: 30px;
+      font-size: 18px;
+      text-align: center;
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Цаг бүртгэл</h1>
 
-  <button onclick="checkIn()">Check In</button>
-  <button onclick="checkOut()">Check Out</button>
+  <h1>⏱ Цаг бүртгэл</h1>
 
-  <p id="result"></p>
+  <button id="btn" class="circle-btn in" onclick="toggle()">
+    Check In
+  </button>
+
+  <div id="status"></div>
 
   <script>
+    let isCheckedIn = false;
     let checkInTime;
 
-    function checkIn() {
-      checkInTime = new Date();
-      localStorage.setItem("checkIn", checkInTime);
-      document.getElementById("result").innerText = "Орсон цаг: " + checkInTime;
-    }
+    function toggle() {
+      let btn = document.getElementById("btn");
+      let status = document.getElementById("status");
 
-    function checkOut() {
-      let out = new Date();
-      let input = new Date(localStorage.getItem("checkIn"));
-      let diff = (out - input) / (1000 * 60 * 60);
+      if (!isCheckedIn) {
+        checkInTime = new Date();
+        localStorage.setItem("checkIn", checkInTime);
 
-      document.getElementById("result").innerText =
-        "Ажилласан: " + diff.toFixed(2) + " цаг";
+        btn.innerText = "Check Out";
+        btn.classList.remove("in");
+        btn.classList.add("out");
+
+        status.innerText = "Оруулсан цаг: " + checkInTime.toLocaleString();
+
+        isCheckedIn = true;
+
+      } else {
+        let checkOutTime = new Date();
+        let start = new Date(localStorage.getItem("checkIn"));
+
+        let diff = (checkOutTime - start) / (1000 * 60 * 60);
+
+        btn.innerText = "Check In";
+        btn.classList.remove("out");
+        btn.classList.add("in");
+
+        status.innerHTML =
+          "Орсон: " + start.toLocaleString() + "<br>" +
+          "Гарсан: " + checkOutTime.toLocaleString() + "<br>" +
+          "Ажилласан: " + diff.toFixed(2) + " цаг";
+
+        isCheckedIn = false;
+      }
     }
   </script>
+
 </body>
 </html>
