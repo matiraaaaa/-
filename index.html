@@ -70,42 +70,79 @@
   navigator.serviceWorker.register("service-worker.js");
 }
     let isCheckedIn = false;
-    let checkInTime;
+let checkInTime;
 
-    function toggle() {
-      let btn = document.getElementById("btn");
-      let status = document.getElementById("status");
+// history хадгалах array
+let history = JSON.parse(localStorage.getItem("history")) || [];
 
-      if (!isCheckedIn) {
-        checkInTime = new Date();
-        localStorage.setItem("checkIn", checkInTime);
+function toggle() {
+  let btn = document.getElementById("btn");
+  let status = document.getElementById("status");
 
-        btn.innerText = "Check Out";
-        btn.classList.remove("in");
-        btn.classList.add("out");
+  if (!isCheckedIn) {
+    // CHECK IN
+    checkInTime = new Date();
 
-        status.innerText = "Оруулсан цаг: " + checkInTime.toLocaleString();
+    localStorage.setItem("checkIn", checkInTime);
 
-        isCheckedIn = true;
+    btn.innerText = "Check Out";
+    btn.classList.remove("in");
+    btn.classList.add("out");
 
-      } else {
-        let checkOutTime = new Date();
-        let start = new Date(localStorage.getItem("checkIn"));
+    status.innerText = "Орсон: " + checkInTime.toLocaleString();
 
-        let diff = (checkOutTime - start) / (1000 * 60 * 60);
+    isCheckedIn = true;
 
-        btn.innerText = "Check In";
-        btn.classList.remove("out");
-        btn.classList.add("in");
+  } else {
+    // CHECK OUT
+    let checkOutTime = new Date();
+    let start = new Date(localStorage.getItem("checkIn"));
 
-        status.innerHTML =
-          "Орсон: " + start.toLocaleString() + "<br>" +
-          "Гарсан: " + checkOutTime.toLocaleString() + "<br>" +
-          "Ажилласан: " + diff.toFixed(2) + " цаг";
+    let diff = (checkOutTime - start) / (1000 * 60 * 60);
 
-        isCheckedIn = false;
-      }
-    }
+    // 🟢 HISTORY-д хадгалах хэсэг
+    let record = {
+      date: start.toLocaleDateString(),
+      checkIn: start.toLocaleTimeString(),
+      checkOut: checkOutTime.toLocaleTimeString(),
+      hours: diff.toFixed(2)
+    };
+
+    history.push(record);
+    localStorage.setItem("history", JSON.stringify(history));
+
+    btn.innerText = "Check In";
+    btn.classList.remove("out");
+    btn.classList.add("in");
+
+    isCheckedIn = false;
+
+    renderHistory();
+  }
+}
+
+// 🟢 History харуулах функц
+function renderHistory() {
+  let status = document.getElementById("status");
+
+  let html = "<h3>📅 History</h3>";
+
+  history.slice().reverse().forEach(h => {
+    html += `
+      <div style="margin-bottom:10px;">
+        📅 ${h.date}<br>
+        ⏰ ${h.checkIn} → ${h.checkOut}<br>
+        ⏱ ${h.hours} цаг
+      </div>
+      <hr>
+    `;
+  });
+
+  status.innerHTML = html;
+}
+
+// page нээгдэхэд history ачаална
+renderHistory();
   </script>
 
 </body>
