@@ -79,19 +79,18 @@
           lng: pos.coords.longitude
         });
       },
-      (err) => {
-        reject(err);
-      }
+      (err) => reject(err)
     );
   });
 }
-    if ("serviceWorker" in navigator) {
+
+if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("service-worker.js");
 }
-    let isCheckedIn = false;
+
+let isCheckedIn = false;
 let checkInTime;
 
-// history хадгалах array
 let history = JSON.parse(localStorage.getItem("history")) || [];
 
 async function toggle() {
@@ -101,7 +100,6 @@ async function toggle() {
   if (!isCheckedIn) {
     // CHECK IN
     checkInTime = new Date();
-
     localStorage.setItem("checkIn", checkInTime);
 
     btn.innerText = "Check Out";
@@ -144,28 +142,6 @@ async function toggle() {
   }
 }
 
-    // 🟢 HISTORY-д хадгалах хэсэг
-    let record = {
-      date: start.toLocaleDateString(),
-      checkIn: start.toLocaleTimeString(),
-      checkOut: checkOutTime.toLocaleTimeString(),
-      hours: diff.toFixed(2)
-    };
-
-    history.push(record);
-    localStorage.setItem("history", JSON.stringify(history));
-
-    btn.innerText = "Check In";
-    btn.classList.remove("out");
-    btn.classList.add("in");
-
-    isCheckedIn = false;
-
-    renderHistory();
-  }
-}
-
-// 🟢 History харуулах функц
 function renderHistory() {
   let status = document.getElementById("status");
 
@@ -185,7 +161,6 @@ function renderHistory() {
   status.innerHTML = html;
 }
 
-// page нээгдэхэд history ачаална
 renderHistory();
   </script>
 
